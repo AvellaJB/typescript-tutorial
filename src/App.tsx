@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import InputField from './components/InputField';
+import { TodoList } from './components/TodoList';
+import {Todo} from "./model"
 
 /* Voilà quelques exmples de déclaration de variables en Typescript */
 let name : string;
@@ -63,18 +66,34 @@ interface Human {
   age?: number,
 }
 /* Les infaces peuvent être extended comme les types */
-
 interface SuperHero extends Human  {
   superpower : string;
 }
 
 /* On peux également extends des types et des interface ensembles en mélangeatn les deux syntaxes. */
 
+/* Ici on déclare que l'app est une react functionnal component */
+const App: React.FC = () => {
+  const [todo, setTodo] = useState<string>("");
+  /* Ici mes todos seront un array de todo, pour définir l'interface on a utilisé un model défini dans model.ts */
+  const [todos, setTodos] = useState<Todo[]>([]); 
 
-function App() {
+  /* event à plusieurs Types possible, ici on utilise FormEvent mais il y'a d'autres utilités.
+  Il ne faut pas oublié de déclarer e dans l'interface du prop input field. */
+
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault();
+    if(todo){
+      setTodos([...todos, {id:Date.now(), todo:todo, isDone:false}])
+      setTodo("")
+    }
+  };
+
   return (
     <div className="App">
-    Hello
+    <span className='heading'>Taskify</span>
+    <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd}/>
+    <TodoList todos={todos} setTodos={setTodos}/>
     </div>
   );
 }
